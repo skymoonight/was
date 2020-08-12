@@ -1,0 +1,1 @@
+insert into lights (select id,date,lat,lng,name,own from CSVREAD('C:\Users\user\IdeaProjects\was\src\main\resources\lightwithU2.csv'));
