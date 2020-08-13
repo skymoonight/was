@@ -6,8 +6,14 @@ logging:
     org.springframework: DEBUG
 
 spring:
+  messages:
+    basename: messages
   jpa:
     show-sql: true
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:./h2_db
+  security:
+    user:
+      name: username
+      password: passwOrd

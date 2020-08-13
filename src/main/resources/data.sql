@@ -1,2 +1,2 @@
-insert into lights (select id,dated,lat,lng,named,own from CSVREAD('C:\Users\user\IdeaProjects\was\src\main\resources\lightwithU3.csv'));
+insert into lights (select id,dated,lat,lng,named,own from CSVREAD('D:\Study\인프런\springboot\was2\src\main\resources\lightwithU2.csv'));
 

@@ -14,7 +14,6 @@ import java.util.Date;
 public class Lights {
 
     @Id
-    @Column(name="light_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
