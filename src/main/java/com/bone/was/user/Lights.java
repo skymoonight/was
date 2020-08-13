@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -14,13 +12,15 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 public class Lights {
+
     @Id
-    @GeneratedValue
+    @Column(name="light_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    private String named;
     private Double lat;
     private Double lng;
     private String own;
-    private Date date;
+    private Date dated;
 }

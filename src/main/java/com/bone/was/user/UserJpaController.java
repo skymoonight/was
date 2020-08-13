@@ -43,9 +43,9 @@ public class UserJpaController {
         return resource;
     }
 
-    @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id){
-        userRepository.deleteById(id);
+    @DeleteMapping("/users/delete")
+    public void deleteUser(){
+        userRepository.deleteUserbyjoindate();
     }
 
     @PostMapping("/users")
