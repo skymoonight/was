@@ -1,15 +1,20 @@
 package com.bone.was;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.encryption.pbe.config.SimplePBEConfig;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
+@EnableEncryptableProperties
 @SpringBootApplication
 public class WasApplication {
 
@@ -20,18 +25,13 @@ public class WasApplication {
     }
 
 //    @Bean("jasyptStringEncryptor")
-//    public StringEncryptor stringEncryptor(Environment environment){
-//        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-//        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-//        config.setPassword(environment.getProperty("jasypt.encryptor.password","test1234"));
-//        config.setAlgorithm("PBEWithSHA1AndDESede");
-//        config.setKeyObtentionIterations("1000");
-//        config.setPoolSize("1");
-//        config.setProvider(new BouncyCastleProvider());
-//        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-//        config.setStringOutputType("base64");
+//    public StandardPBEStringEncryptor jasyptConfigure(){
+//        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+//        SimplePBEConfig config = new SimplePBEConfig();
+//        config.setAlgorithm("PBEWithMD5AndDES");
+//        config.setPoolSize(1);
 //        encryptor.setConfig(config);
+//
 //        return encryptor;
 //    }
-
 }
