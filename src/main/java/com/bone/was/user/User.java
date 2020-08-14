@@ -1,20 +1,11 @@
 package com.bone.was.user;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 
 @Data
@@ -29,6 +20,7 @@ public class User {
     @GeneratedValue
     private Integer id;
 
+    //@Convert(converter= StringEncryptConverter.class)
     private String AuthKey;
 
     //@CreationTimestamp

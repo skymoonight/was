@@ -17,7 +17,9 @@ public class Lights {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    // @Convert(converter = StringEncryptConverter.class)
     private String named;
+
     private Double lat;
     private Double lng;
     private String own;
