@@ -16,13 +16,12 @@ import java.sql.Date;
 @Entity
 @Table(name="users")
 public class User {
-    @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     //@Convert(converter= StringEncryptConverter.class)
-    private String AuthKey;
-
+    @Id
+    private String authkey;
+    private Character user_type;
     //@CreationTimestamp
     //private LocalDateTime joinDate;
     private Date joinDate;

@@ -13,10 +13,10 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:./h2_db
-#  security:
-#    user:
-#      name: skymoonight
-#      password: ENC(ofUO3GOYyufVWXXmFNdTOlbhEk78aQfn)
+  security:
+    user:
+      name: skymoonight
+      password: ENC(ofUO3GOYyufVWXXmFNdTOlbhEk78aQfn)
 ##      password: ddorddor
 
 
