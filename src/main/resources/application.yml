@@ -19,6 +19,8 @@ spring:
       password: ENC(ofUO3GOYyufVWXXmFNdTOlbhEk78aQfn)
 ##      password: ddorddor
 
+security.jwt.token.secret-key: skymoonight
+security.jwt.token.expire-length: 3600000
 
 jasypt:
   encryptor:

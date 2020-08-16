@@ -1,5 +1,6 @@
-package com.bone.was.config;
+package com.bone.was.Filter;
 
+import com.bone.was.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

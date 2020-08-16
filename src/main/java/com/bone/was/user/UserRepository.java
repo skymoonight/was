@@ -6,8 +6,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.authkey = :authkey")
-    Optional<User> findByAuthKey(@Param("authkey") String authkey);
+    Optional<User> findByAuthKey(String authkey);
 }
