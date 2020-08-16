@@ -23,10 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@JsonIgnoreProperties(value={"password","ssn"})
-//@JsonFilter("UserInfo")
 @Entity
-//@Table(name="users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +32,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false,unique = true)
     private String authkey;
-    //private Character user_type;
 //    @CreationTimestamp
 //    private LocalDateTime joinDate;
 

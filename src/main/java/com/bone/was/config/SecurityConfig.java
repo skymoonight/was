@@ -46,7 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/h2-console/**").permitAll();
         http.csrf().disable();
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/jpa/**").hasRole("Admin")
+        http.authorizeRequests().antMatchers("/jpa/**").hasRole("ROLE_USER")
+                .anyRequest().permitAll()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().antMatchers("/lights/**").hasRole("ROLE_USER")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

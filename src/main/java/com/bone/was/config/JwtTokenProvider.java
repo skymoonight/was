@@ -1,7 +1,9 @@
 package com.bone.was.config;
 
+import com.bone.was.user.UserService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +25,7 @@ public class JwtTokenProvider {
     // 토큰 유효시간 30분
     private long tokenValidTime = 30 * 60 * 1000L;
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct

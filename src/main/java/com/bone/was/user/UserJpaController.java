@@ -3,6 +3,7 @@ package com.bone.was.user;
 import com.bone.was.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
@@ -23,11 +24,11 @@ import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/jwt/users")
 public class UserJpaController {
-    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
@@ -42,11 +43,19 @@ public class UserJpaController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> user) {
+    public JSONObject login(@RequestBody Map<String, String> user) {
+        JSONObject result = new JSONObject();
         User member = userRepository.findByAuthKey(user.get("authkey"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 authkey 입니다."));
-                return jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
+        String JWT = jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
+        result.put("JWT",JWT);
+        System.out.println("JWT:"+JWT);
+        return result;
     }
+
+    // 탈퇴
+//    @DeleteMapping("/delete")
+//    public String logout
 
 
 //    @GetMapping("/users")

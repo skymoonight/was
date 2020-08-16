@@ -1,17 +1,22 @@
 package com.bone.was.user;
 
+import com.bone.was.config.JwtTokenProvider;
+import com.bone.was.location.Location;
 import com.bone.was.location.Route;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/lights")
 public class LightsController {
     @Autowired
     private LightsDaoService service;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 모든 가로등 정보
     @GetMapping("/all")
@@ -19,12 +24,27 @@ public class LightsController {
         return service.findAll();
     }
 
-    // 사용자 위치 주변의 가로등 정보
-    @PostMapping("/nlights")
-    public List<Lights> nearLights(@RequestBody Lights location){
+    // mode 1. 사용자 위치 주변의 가로등 정보
+    @PostMapping("/lights") //jsonArraylist
+    public List<Lights> myLights(@RequestBody Location[] location1) { //List<Lights>
+//@RequestHeader(value="authkey") String authkey,
+        // no authkey -> return ArrayList
+//        if(authkey == null){
+//            return new ArrayList<Lights>();
+//        }
+
         List<Lights> lights = service.findAll();
         List<Lights> ret = new ArrayList<>();
+        Lights tmp;
+        //debug
+        Location location = location1[0];
+        System.out.println("* dgb : mode 1. lights *");
+        System.out.println("[dbg] " + location);
+        System.out.println("[dbg] " + location.getLat() + ", " + location.getLng());
+        // System.out.println("[dbg1] " + authkey);
 
+
+        //        오차 0.001 약 100m => 50m
         for (Lights lis : lights) {
             if ((lis.getLat() < location.getLat() + 0.001) && (lis.getLat() >= location.getLat() - 0.001)) {
                 if ((lis.getLng() < location.getLng() + 0.001) && (lis.getLng() >= location.getLng() - 0.001)) {
@@ -32,8 +52,11 @@ public class LightsController {
                 }
             }
         }
-        return ret;
+        System.out.println("[dbg] length " + ret.size());
+        tmp = lights.get(0);
+        return ret; // tmp;// null 포인트 (가로등 없는거처리) - 안드로이드단
     }
+
 
 
 //    @GetMapping("/iftest")
