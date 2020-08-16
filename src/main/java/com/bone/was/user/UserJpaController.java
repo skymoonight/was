@@ -47,6 +47,7 @@ public class UserJpaController {
         JSONObject result = new JSONObject();
         User member = userRepository.findByAuthKey(user.get("authkey"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 authkey 입니다."));
+        System.out.println("role:"+member.getRoles());
         String JWT = jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
         result.put("JWT",JWT);
         System.out.println("JWT:"+JWT);
