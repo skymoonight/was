@@ -1,5 +1,16 @@
 server:
-  port: 8080
+  port: 443
+  ssl:
+    enabled: true
+    key-store: classpath:cert.jks
+    key-password: seleuchel
+    key-store-type: JKS
+    key-alias: 1
+
+    trust-store: classpath:trustcert.jks
+    trust-store-password: seleuchel
+    protocol: TLS
+    client-auth: want
 
 logging:
   level:
