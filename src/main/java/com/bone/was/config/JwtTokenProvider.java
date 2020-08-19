@@ -5,6 +5,7 @@ import com.bone.was.Valid.userTokenRepository;
 import com.bone.was.user.UserService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.bouncycastle.jcajce.provider.symmetric.AES;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,7 +39,9 @@ public class JwtTokenProvider {
     @PostConstruct
     protected void init() {
         // spotbugs : 더 어려운 알고리즘 빨리.
+        // 권장 : AES
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+
     }
 
     // JWT 토큰 생성

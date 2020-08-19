@@ -122,10 +122,9 @@ public class LightsController {
 
         try {
             // destination Parsing
-
             JSONObject dstp = (JSONObject) jsonParser.parse(destination);
-            dststr = (String) dstp.get("et"); //값 검증없이 그냥 사용
-            // path class를 따로 파야할 듯.
+            dststr = (String) dstp.get("et");
+            //dststr 값 검증 필요 - xss, html script냐
 
             url = "https://apis.openapi.sk.com/tmap/pois?version=1&format=json&callback=result&appKey=l7xx40fd78a3aba2484eaa6e2546a5eeccc5&searchKeyword=" +
                     URLEncoder.encode(dststr, "UTF-8") +
@@ -141,12 +140,13 @@ public class LightsController {
         try {
             URL urlObj = new URL(url);
             urlConnection = (HttpsURLConnection) urlObj.openConnection();
-            // null check
+            // urlConnection null check
             if (urlConnection == null) {
                 throw new NullPointerException();
+                // 이것 보다는 연결이 안됨을 의미하는 exception이 적절.
             }
 
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream()); // https
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             // SPOTBUG : HIGH - encoding
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
@@ -154,14 +154,15 @@ public class LightsController {
                 result.append(line);
             }
 
-            // SPOTBUG : 자원 close
+            // SPOTBUG : HIGH - 자원 close
             in.close();
             reader.close();
 
         } catch (MalformedURLException e1) {
             // 에러핸들러 처리
 
-        } catch (IOException e1) {
+        } catch (IOException e2) {
+            //에러 핸들러처리
         }
         try {
             JSONObject jsonobj = (JSONObject) jsonParser.parse(result.toString());
@@ -196,16 +197,20 @@ public class LightsController {
 
     // 동작2. 출발지와 목적지 간에 있는 가로등 리스트를 출발지와 가까운 순으로 오름차순하여 json으로 반환.
     @PostMapping("/pathlights")
-    public JSONObject pathLights(@NotBlank @RequestBody String route1) throws ParseException {
+    public JSONObject pathLights(@NotBlank @RequestBody String route1)  {
 
         List<Lights> lights = service.findAll();
         List<Lights> ret = new ArrayList<>();
         JSONObject tmp = new JSONObject();
         double slat, slng, dlat, dlng = 0;
-
+        JSONObject dstp = null;
         //parse data
         JSONParser jsonParser = new JSONParser();
-        JSONObject dstp = (JSONObject) jsonParser.parse(route1);
+        try {
+            dstp = (JSONObject) jsonParser.parse(route1);
+        } catch(ParseException e){
+            // 처리
+        }
         slat = (Double) dstp.get("slat");
         slng = (Double) dstp.get("slng");
         dlat = (Double) dstp.get("dlat");
@@ -241,7 +246,7 @@ public class LightsController {
         }
 
         // for sort
-        // ret -> ret5
+        // ret -> ret5 : 알고리즘 처리?
         List<Lights> ret5 = new ArrayList<>();
         if (ret.size() >= 5) {
             for (int i = 0; i < 5; i++)
@@ -276,7 +281,6 @@ public class LightsController {
                 }
             }
         }
-
         tmp.put("lights", ret5);
 
         // return 5 lights.
