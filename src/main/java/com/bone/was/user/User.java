@@ -1,9 +1,6 @@
 package com.bone.was.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,8 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,6 +30,7 @@ public class User implements UserDetails {
     private String authkey;
 //    @CreationTimestamp
 //    private LocalDateTime joinDate;
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

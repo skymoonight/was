@@ -1,5 +1,6 @@
 server:
   port: 443
+#  443
   ssl:
     enabled: true
     key-store: classpath:cert.jks

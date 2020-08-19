@@ -2,8 +2,6 @@ package com.bone.was.user;
 
 import com.bone.was.config.JwtTokenProvider;
 import com.bone.was.location.Destination;
-import com.bone.was.location.Location;
-import com.bone.was.location.Route;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,13 +31,18 @@ public class LightsController {
         return "Gwi Chuck NoNo";
     }
 
+    @PostMapping("/test1")
+    public String test1(){
+        return "Gwi Chuck NoNo";
+    }
+
     // 모든 가로등 정보
     @GetMapping("/all")
     public List<Lights> retrieveAllLights(){
         return service.findAll();
     }
 
-    @RequestMapping("/m")
+    @PostMapping("/m")
     public JSONObject hashTest(@RequestBody String hash) throws ParseException {
         JSONParser jsonParser = new JSONParser();
         JSONObject jo = (JSONObject) jsonParser.parse(hash);
@@ -48,7 +51,7 @@ public class LightsController {
 
         JSONObject result = new JSONObject();
 
-        if( hashstr.equals("uvOgtZ990kwBbEGPhbWDNwM5kPA=")){
+        if( hashstr.equals("a")){
             System.out.println("[dbg] 200 허락");
             result.put("state", 200);
             return result;
@@ -60,35 +63,57 @@ public class LightsController {
     }
     // mode 1. 사용자 위치 주변의 가로등 정보
     @PostMapping("/lights") //jsonArraylist
-    public List<Lights> myLights(@RequestBody Location[] location1) { //List<Lights>
+    public JSONObject myLights(@RequestBody String location1) { //List<Lights>
 //@RequestHeader(value="authkey") String authkey,
         // no authkey -> return ArrayList
 //        if(authkey == null){
 //            return new ArrayList<Lights>();
 //        }
+        Double tmp_lat=null;
+        Double tmp_lng=null;
+        try {
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(location1);
+            JSONObject jsonObject = (JSONObject) obj;
+            tmp_lat = (double)jsonObject.get("lat");
+            tmp_lng =  (double)jsonObject.get("lng");
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        System.out.println("[DBG] lat, lng : " + tmp_lat + ", " + tmp_lng);
 
         List<Lights> lights = service.findAll();
         List<Lights> ret = new ArrayList<>();
-        Lights tmp;
+        // temp test dbg
+        JSONObject tmp = new JSONObject();
         //debug
-        Location location = location1[0];
+/*        Location location = location1[0];
         System.out.println("* dgb : mode 1. lights *");
         System.out.println("[dbg] " + location);
-        System.out.println("[dbg] " + location.getLat() + ", " + location.getLng());
-        // System.out.println("[dbg1] " + authkey);
+        System.out.println("[dbg] " + location.() + ", " + location.getLng());
+        // System.out.println("[dbg1] " + authkey);*/
 
+        System.out.println("* dgb : mode 1. lights *");
+
+        System.out.println("[dbg] " + tmp_lat + ", " + tmp_lng);
 
         //        오차 0.001 약 100m => 50m
         for (Lights lis : lights) {
-            if ((lis.getLat() < location.getLat() + 0.001) && (lis.getLat() >= location.getLat() - 0.001)) {
-                if ((lis.getLng() < location.getLng() + 0.001) && (lis.getLng() >= location.getLng() - 0.001)) {
+            if ((lis.getLat() < tmp_lat + 0.001) && (lis.getLat() >= tmp_lat - 0.001)) {
+                if ((lis.getLng() < tmp_lng + 0.001) && (lis.getLng() >= tmp_lng - 0.001)) {
+                    System.out.println("[DBG] get lights ho~ : " + lis);
                     ret.add(lis);
                 }
             }
         }
         System.out.println("[dbg] length " + ret.size());
-        tmp = lights.get(0);
-        return ret; // tmp;// null 포인트 (가로등 없는거처리) - 안드로이드단
+
+        // send to json
+        tmp.put("lights", ret);
+        return tmp; // tmp;// null 포인트 (가로등 없는거처리) - 안드로이드단
     }
 
 
@@ -110,8 +135,8 @@ public class LightsController {
 //    }
 
     // mode 1.5 : 상세 목적지 이름, 위도, 경도 받아오기
-    @RequestMapping("/finddst") //destination == et,   //result is JSONArray
-    public List<Destination> searchDst(@RequestBody String destination) throws ParseException, UnsupportedEncodingException { // //@PathVariable String destination){
+    @PostMapping("/finddst") //destination == et,   //result is JSONArray
+    public JSONObject searchDst(@RequestBody String destination) throws ParseException, UnsupportedEncodingException { // //@PathVariable String destination){
 //@RequestHeader(value="authkey") String authkey,
         // no authkey -> return ArrayList
 //        if(authkey == null){
@@ -120,13 +145,13 @@ public class LightsController {
 
         // destination Parsing
         JSONParser jsonParser = new JSONParser();
-        JSONArray dstp = (JSONArray) jsonParser.parse(destination);
-        JSONObject dstp_o = (JSONObject) dstp.get(0);
-        String dststr = (String) dstp_o.get("et");
+        JSONObject dstp = (JSONObject) jsonParser.parse(destination);
+        String dststr = (String) dstp.get("et");
 
         System.out.println("dfdg_seleuchel : " + dststr);
 
         List<Destination> dstlist = new ArrayList<>();
+        JSONObject tmp = new JSONObject();
         String line = "";
         // path class를 따로 파야할 듯.
 
@@ -167,49 +192,61 @@ public class LightsController {
 
         }
 
+        // format
+        tmp.put("dst",dstlist);
+
         System.out.println("********** 3 ************");
         System.out.println("[dbg] dst : " + dststr);
         System.out.println("[dbg] url : " + url);
         System.out.println("[dbg] print line : " + jsonpoi);
         // System.out.println("[dbg2] " + authkey);
-        return dstlist;
+        return tmp;
     }
 
     // 동작2. 출발지와 목적지 간에 있는 가로등 리스트를 출발지와 가까운 순으로 오름차순하여 json으로 반환.
     @PostMapping("/pathlights")
-    public List<Lights> pathLights( @RequestBody Route[] route1) {
+    public JSONObject pathLights( @RequestBody String route1) throws ParseException {
 //@RequestHeader(value="authkey") String authkey,
         // no authkey -> return ArrayList
 //        if(authkey == null){
 //            return new ArrayList<Lights>();
 //        }
-
         List<Lights> lights = service.findAll();
         List<Lights> ret = new ArrayList<>();
+        JSONObject tmp = new JSONObject();
+        double slat, slng, dlat, dlng = 0;
+
+        //parse data
+        JSONParser jsonParser = new JSONParser();
+        JSONObject dstp = (JSONObject) jsonParser.parse(route1);
+        slat = (Double) dstp.get("slat");
+        slng = (Double) dstp.get("slng");
+        dlat = (Double) dstp.get("dlat");
+        dlng = (Double) dstp.get("dlng");
 
         //debug
-        Route route = route1[0];
         System.out.println("* dgb : mode 2. pathlights *");
-        System.out.println("[dbg] " + route);
-        System.out.println("[dbg] Start : " + route.getSlat() + ", " + route.getSlng());
-        System.out.println("[dbg] End : " + route.getDlat() + ", " + route.getDlng());
+        System.out.println("[dbg] Start : " + slat + ", " + slng);
+        System.out.println("[dbg] End : " + dlat + ", " + dlng);
+
+
 
         double smalllat, biglat, smalllng, biglng = 0;
 
         // biglat, smalllat, biglng, smallng
-        if (route.getSlat() >= route.getDlat()) {
-            biglat = route.getSlat();
-            smalllat = route.getDlat();
+        if (slat >= dlat) {
+            biglat = slat;
+            smalllat = dlat;
         } else {
-            biglat = route.getDlat();
-            smalllat = route.getSlat();
+            biglat = dlat;
+            smalllat = slat;
         }
-        if (route.getSlng() >= route.getDlng()) {
-            biglng = route.getSlng();
-            smalllng = route.getDlng();
+        if (slng >= dlng) {
+            biglng = slng;
+            smalllng = dlng;
         } else {
-            biglng = route.getDlng();
-            smalllng = route.getSlng();
+            biglng = dlng;
+            smalllng = slng;
         }
 
         System.out.println("[dbg] big : " + biglat + ", " + biglat);
@@ -245,7 +282,7 @@ public class LightsController {
         int idx = 0;
         double distance[] = new double[ret5.size()];
         for (Lights l : ret5) {
-            double k = (l.getLat() - route.getSlat()) * (l.getLat() - route.getSlat()) + (l.getLng() - route.getSlng()) * (l.getLng() - route.getSlng());
+            double k = (l.getLat() - slat) * (l.getLat() - slat) + (l.getLng() - slng) * (l.getLng() - slng);
             distance[idx] = k;
             idx++;
 
@@ -272,8 +309,10 @@ public class LightsController {
             System.out.println("[dbg] final lights >> " + ret5.get(i).getLat() + ", " + ret5.get(i).getLng());
         }
         // System.out.println("[dbg3] " + authkey);
+        tmp.put("lights", ret5);
 
-        return ret5;
+        // return 5 lights.
+        return tmp;
     }
 
 }

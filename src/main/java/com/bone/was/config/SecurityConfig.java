@@ -51,14 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         //http.cors().disable();
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/jwt/users/**").permitAll()
+        http.authorizeRequests().antMatchers("/jwt/users/**","/lights/m").permitAll()
 //                .anyRequest().permitAll()
 //                .and()
 //                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
 //                        UsernamePasswordAuthenticationFilter.class);
 
-//            .anyRequest().
-                .anyRequest().permitAll()
+            .anyRequest().authenticated()
+//              .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

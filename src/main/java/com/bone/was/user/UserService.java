@@ -14,6 +14,7 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
+    @Autowired
     private final UserRepository userRepository;
 
     @Override
@@ -21,6 +22,9 @@ public class UserService implements UserDetailsService {
         return (UserDetails) userRepository.findByAuthKey(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
+
+
+
 
 //    @Autowired
 //    private UserRepository userRepository;
@@ -32,9 +36,7 @@ public class UserService implements UserDetailsService {
 //    }
 //
 //
-//    public User save(User user) {
-//        return userRepository.save(user);
-//    }
+
 //
 //    public String createToken(LoginRequest loginRequest){
 //        User user = userRepository.findByAuthKey(loginRequest.getAuthkey())
