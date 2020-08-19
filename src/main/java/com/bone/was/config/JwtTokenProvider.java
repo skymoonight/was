@@ -37,6 +37,7 @@ public class JwtTokenProvider {
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
+        // spotbugs : 더 어려운 알고리즘 빨리.
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 

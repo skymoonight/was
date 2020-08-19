@@ -2,10 +2,12 @@ package com.bone.was.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
+
 
 @Data
 @AllArgsConstructor

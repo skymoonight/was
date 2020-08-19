@@ -25,21 +25,11 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:./h2_db
-  security:
-    user:
-      name: skymoonight
-      password: ENC(ofUO3GOYyufVWXXmFNdTOlbhEk78aQfn)
-##      password: ddorddor
 
-security.jwt.token.secret-key: skymoonight
-security.jwt.token.expire-length: 3600000
-
-jasypt:
-  encryptor:
-    password: test1234
-    property:
-      prefix: ENC(
-      suffix: )
-#    bean: jasyptStringEncryptor
-    algorithm: PBEWithMD5AndDES
-#    bean: jasyptStringEncryptor
+#jasypt:
+#  encryptor:
+#    password: test1234
+#    property:
+#      prefix: ENC(
+#      suffix: )
+#    algorithm: PBEWithMD5AndDES
