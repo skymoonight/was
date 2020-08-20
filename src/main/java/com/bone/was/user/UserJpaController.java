@@ -36,7 +36,7 @@ public class UserJpaController {
             if (userRepository.findByAuthKey(user.get(AUTHKEY)).isEmpty()) {
                 return userRepository.save(User.builder()
                         .authkey(user.get(AUTHKEY))
-                        .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
+                        .roles(Collections.singletonList("ROLE_USER"))
                         .build()).getId();
             } else {
                 return 200L;

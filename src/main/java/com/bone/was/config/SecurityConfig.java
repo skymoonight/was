@@ -23,13 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 암호화에 필요한 PasswordEncoder 를 Bean 등록합니다.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    //     authenticationManager를 Bean 등록합니다.
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
