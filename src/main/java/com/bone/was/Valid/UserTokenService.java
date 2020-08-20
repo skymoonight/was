@@ -11,8 +11,6 @@ public class UserTokenService {
     private UserTokenRepository userTokenRepository;
 
     public UserToken save(@NotBlank UserToken userToken) {
-        //public method로부터 반환된 private
-        // public <-> private  접근 관련한 코드 확인 및 수정
-        return userTokenRepository.save(userToken);
+                return userTokenRepository.save(userToken);
     }
 }

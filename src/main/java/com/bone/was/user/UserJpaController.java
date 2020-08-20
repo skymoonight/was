@@ -9,6 +9,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.Map;
@@ -28,23 +29,20 @@ public class UserJpaController {
 
     // 회원가입 - id 해시처리하여 db 저장
     @PostMapping("/join")
-    public Long join(@NotBlank @RequestBody Map<String,String> user) {
+    public Long join(@NotBlank @RequestBody Map<String, String> user) {
         final String AUTHKEY = "authkey";
-        // seleuchel
-//        System.out.println(" U authkey : " + user.get("authkey"));
-//        System.out.println(" U exisst? : " + (userRepository.findByAuthKey(user.get("authkey")).isEmpty()));
-        if (user.get(AUTHKEY) != null ){
-            // new user
-            if (userRepository.findByAuthKey(user.get(AUTHKEY)).isEmpty()){
+
+        if (user.get(AUTHKEY) != null) {
+            if (userRepository.findByAuthKey(user.get(AUTHKEY)).isEmpty()) {
                 return userRepository.save(User.builder()
                         .authkey(user.get(AUTHKEY))
                         .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
                         .build()).getId();
-            }else{
+            } else {
                 return 200L;
             }
-        }else{
-            throw new NullPointerException();
+        } else {
+            return 400L;
         }
     }
 
@@ -55,28 +53,26 @@ public class UserJpaController {
         User member = userRepository.findByAuthKey(user.get("authkey"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 authkey 입니다."));
         String JWT = jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
-        result.put("JWT",JWT);
+        result.put("JWT", JWT);
         saveToken(JWT);
-//        System.out.println("U JWT:"+JWT);
         return result;
     }
 
     @PostMapping("/delete")
-    public String delete(@NotBlank @RequestBody String deleteRequest){
+    public String delete(@NotBlank @RequestBody String deleteRequest) {
         try {
             JSONParser jsonParser = new JSONParser();
             JSONObject logoutreq = (JSONObject) jsonParser.parse(deleteRequest);
             String authkey = (String) logoutreq.get("authkey2");
             User usered = userRepository.findByAuthKey(authkey).orElseThrow(() -> new IllegalArgumentException("없는 회원"));
-//            System.out.println("here" + usered);
             userRepository.delete(usered);
             return "delete success";
-        }catch(ParseException e){
-            return "ParseException: " + e.getMessage();
+        } catch (ParseException e) {
+            return "400";
         }
     }
 
-    public Long saveToken(@NotBlank String jwtToken){
+    public Long saveToken(@NotBlank String jwtToken) {
         return userTokenRepository.save(UserToken.builder()
                 .usertoken(jwtToken)
                 .build()).getId();

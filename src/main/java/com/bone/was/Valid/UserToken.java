@@ -2,8 +2,6 @@ package com.bone.was.Valid;
 
 import lombok.Builder;
 import lombok.Getter;
-
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

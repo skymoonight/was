@@ -22,7 +22,6 @@ public class JwtTokenProvider {
 
     private String secretKey=System.getenv("JASYPT_PASSWORD");
 
-    // 토큰 유효시간 30분 -> 15분 -> 1분
     private long tokenValidTime = 1 * 60 * 1000L;
 
     private final UserService userDetailsService;
@@ -32,8 +31,6 @@ public class JwtTokenProvider {
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
-        // spotbugs : 더 어려운 알고리즘 빨리.
-        // 권장 : AES...
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 
     }

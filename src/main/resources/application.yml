@@ -1,6 +1,6 @@
 server:
   port: 443
-#  443
+
   ssl:
     enabled: true
     key-store: classpath:cert.jks
@@ -27,7 +27,7 @@ spring:
     url: jdbc:h2:mem:./h2_db
   h2:
     console:
-      path: /safezonebone
+      path: /S@fE*20N3*6ON3
       enabled: true
 
 jasypt:

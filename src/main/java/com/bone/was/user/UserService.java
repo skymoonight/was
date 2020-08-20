@@ -14,8 +14,7 @@ import javax.validation.constraints.NotBlank;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private final UserRepository userRepository; // 1. 잘못된ㅇ 세션에 의한 정보노출 가능성
-
+    private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(@NotBlank String username) throws UsernameNotFoundException {
         return (UserDetails) userRepository.findByAuthKey(username)

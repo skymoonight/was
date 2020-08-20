@@ -42,14 +42,13 @@ public class LightsController {
             JSONParser jsonParser = new JSONParser();
             JSONObject jo = (JSONObject) jsonParser.parse(hash);
             String hashstr = (String) jo.get("hash");
-            // null
             if (hashstr == null) {
-                throw new NullPointerException();
+                return (JSONObject) new JSONObject().put("state",400);
             }
             hashstr = hashstr.replace("\n", "");
 
 
-            if (hashstr.equals("a")) {
+            if (hashstr.equals("aubvwL2QqTlth5B5zP7iWik4+Rg=")) {
                 result.put("state", 200);
                 return result;
             } else {
@@ -57,25 +56,16 @@ public class LightsController {
                 return result;
             }
         } catch (ParseException e) {
-            // 핸들러처리
             String errM = e.getMessage();
-            err.put("hash_PE",errM);
-            // ??? json object 핸들러 처리?
+            err.put("hash_PE", errM);
+            return (JSONObject) new JSONObject().put("state",400);
 
-        } catch (NullPointerException e1) {
-            // 핸들러 처리
-            String errM = e1.getMessage();
-            err.put("hash_NE",errM);
-
-        } finally {
-            err.put("hash_fi", "no match hash");
-            return err;
         }
     }
 
     // mode 1. 사용자 위치 주변의 가로등 정보
-    @PostMapping("/lights") //jsonArraylist
-    public JSONObject myLights(@NotBlank @RequestBody String location1) { //List<Lights>
+    @PostMapping("/lights")
+    public JSONObject myLights(@NotBlank @RequestBody String location1) {
         double tmp_lat = 0.0;
         double tmp_lng = 0.0;
         try {
@@ -86,7 +76,6 @@ public class LightsController {
             tmp_lng = (double) jsonObject.get("lng");
 
         } catch (ParseException e) {
-            // 핸들러 처리 : parseexception
             tmp_lat = 0.0;
             tmp_lng = 0.0;
         }
@@ -99,16 +88,16 @@ public class LightsController {
         // 오차 0.001 약 100m => 50m
         for (Lights lis : lights) {
             if ((lis.getLat() < tmp_lat + 0.001) && (lis.getLat() >= tmp_lat - 0.001) && (lis.getLng() < tmp_lng + 0.001) && (lis.getLng() >= tmp_lng - 0.001)) {
-                    ret.add(lis);
+                ret.add(lis);
             }
         }
-        // send to json
+
         retobj.put("lights", ret);
-        return retobj; // tmp;// null 포인트 (가로등 없는거처리) - 안드로이드단
+        return retobj;
     }
 
     // mode 1.5 : 상세 목적지 이름, 위도, 경도 받아오기
-    @PostMapping("/finddst") //destination == et,   //result is JSONArray
+    @PostMapping("/finddst")
     public JSONObject searchDst(@NotBlank @RequestBody String destination) {
         HttpsURLConnection urlConnection = null;
         String dststr = "";
@@ -121,50 +110,44 @@ public class LightsController {
         StringBuilder result = new StringBuilder();
 
         try {
-            // destination Parsing
             JSONObject dstp = (JSONObject) jsonParser.parse(destination);
             dststr = (String) dstp.get("et");
-            //dststr 값 검증 필요 - xss, html script냐
 
             url = "https://apis.openapi.sk.com/tmap/pois?version=1&format=json&callback=result&appKey=l7xx40fd78a3aba2484eaa6e2546a5eeccc5&searchKeyword=" +
                     URLEncoder.encode(dststr, "UTF-8") +
-                    "&resCoordType=WGS84GEO&reqCoordType=WGS84GEO&count=10"; //10개만 return
+                    "&resCoordType=WGS84GEO&reqCoordType=WGS84GEO&count=10";
 
 
         } catch (ParseException e) {
-            // 에러핸들러 처리
+            return (JSONObject) new JSONObject().put("state", 400);
 
         } catch (UnsupportedEncodingException e1) {
-            // 에러핸들러 처리
+            return (JSONObject) new JSONObject().put("state", 400);
         }
 
         try {
             URL urlObj = new URL(url);
             urlConnection = (HttpsURLConnection) urlObj.openConnection();
-            // urlConnection null check
             if (urlConnection == null) {
-                throw new NullPointerException();
-                // 이것 보다는 연결이 안됨을 의미하는 exception이 적절.
+                return (JSONObject) new JSONObject().put("state", 400);
+
             }
 
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            // SPOTBUG : HIGH - encoding
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
 
-            // SPOTBUG : HIGH - 자원 close
             in.close();
             reader.close();
 
-        }
-        catch (MalformedURLException e1) {
-            // 에러핸들러 처리
+        } catch (MalformedURLException e1) {
+            return (JSONObject) new JSONObject().put("state", 400);
 
         } catch (IOException e2) {
-            //에러 핸들러처리
+            return (JSONObject) new JSONObject().put("state", 400);
         }
         try {
             JSONObject jsonobj = (JSONObject) jsonParser.parse(result.toString());
@@ -178,18 +161,12 @@ public class LightsController {
                 dstlist.add(d);
 
             }
-            // format
-
         } catch (ParseException e) {
-
-        } catch (NullPointerException e1) {
-            // failed open urlConnection
-            // 에러핸들러 처리
+            return (JSONObject) new JSONObject().put("state", 400);
         } finally {
-            if (urlConnection != null){
-                urlConnection.disconnect();}
-
-            // no result
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
             tmp.put("dst", dstlist);
             return tmp;
         }
@@ -197,19 +174,18 @@ public class LightsController {
 
     // 동작2. 출발지와 목적지 간에 있는 가로등 리스트를 출발지와 가까운 순으로 오름차순하여 json으로 반환.
     @PostMapping("/pathlights")
-    public JSONObject pathLights(@NotBlank @RequestBody String route1)  {
+    public JSONObject pathLights(@NotBlank @RequestBody String route1) {
 
         List<Lights> lights = service.findAll();
         List<Lights> ret = new ArrayList<>();
         JSONObject tmp = new JSONObject();
         double slat, slng, dlat, dlng = 0;
         JSONObject dstp = null;
-        //parse data
         JSONParser jsonParser = new JSONParser();
         try {
             dstp = (JSONObject) jsonParser.parse(route1);
-        } catch(ParseException e){
-            // 처리
+        } catch (ParseException e) {
+            return (JSONObject) new JSONObject().put("state", 400);
         }
         slat = (Double) dstp.get("slat");
         slng = (Double) dstp.get("slng");
@@ -218,7 +194,6 @@ public class LightsController {
 
         double smalllat, biglat, smalllng, biglng = 0;
 
-        // biglat, smalllat, biglng, smallng
         if (slat >= dlat) {
             biglat = slat;
             smalllat = dlat;
@@ -236,23 +211,20 @@ public class LightsController {
 
         // 범위에 해당하는 가로등 리스트에 저장. (오차 범위 0.001 약 100m)
         // 가로등 5개 반환
-        int cont = 0; // 이거 안쓰는거면 지워주라
         for (Lights lis : lights) {
             if ((lis.getLat() < biglat) && (lis.getLat() >= smalllat) && (lis.getLng() < biglng) && (lis.getLng() >= smalllng)) {
-                    ret.add(lis);
+                ret.add(lis);
             }
         }
 
-        // for sort
-        // ret -> ret5 : 알고리즘 처리?
         List<Lights> ret5 = new ArrayList<>();
         if (ret.size() >= 5) {
-            for (int i = 0; i < 5; i++){
-                ret5.add(ret.get(i));}
+            for (int i = 0; i < 5; i++) {
+                ret5.add(ret.get(i));
+            }
         } else {
             ret5 = ret;
         }
-
 
         // 출발지로부터 거리 계산
         int idx = 0;
@@ -261,7 +233,6 @@ public class LightsController {
             double k = (l.getLat() - slat) * (l.getLat() - slat) + (l.getLng() - slng) * (l.getLng() - slng);
             distance[idx] = k;
             idx++;
-
 
             // 거리값으로 오름차순 sort
             for (int i = 0; i < idx - 1; i++) {
@@ -280,8 +251,6 @@ public class LightsController {
             }
         }
         tmp.put("lights", ret5);
-
-        // return 5 lights.
         return tmp;
     }
 
