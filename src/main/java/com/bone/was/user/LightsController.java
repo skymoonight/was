@@ -3,6 +3,7 @@ package com.bone.was.user;
 import com.bone.was.config.JwtTokenProvider;
 import com.bone.was.location.Destination;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,7 +36,7 @@ public class LightsController {
     }
 
     @PostMapping("/m")
-    public JSONObject hashTest(@NotBlank @RequestBody String hash) {
+    public JSONObject hashTest(@RequestBody String hash) {
         JSONObject result = new JSONObject();
         JSONObject err = new JSONObject();
         try {
@@ -56,8 +57,6 @@ public class LightsController {
                 return result;
             }
         } catch (ParseException e) {
-            String errM = e.getMessage();
-            err.put("hash_PE", errM);
             return (JSONObject) new JSONObject().put("state",400);
 
         }
@@ -149,7 +148,7 @@ public class LightsController {
         } catch (IOException e2) {
             return (JSONObject) new JSONObject().put("state", 400);
         }
-        try {
+            try {
             JSONObject jsonobj = (JSONObject) jsonParser.parse(result.toString());
             JSONObject jsoninfo = (JSONObject) jsonobj.get("searchPoiInfo");
             JSONObject jsonpois = (JSONObject) jsoninfo.get("pois");
