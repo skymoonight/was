@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.authkey = :authkey")
-    Optional<User> findByAuthKey(@NotBlank @Param("authkey") String authkey); // 수정
+    Optional<User> findByAuthKey(@NotBlank @Param("authkey") String authkey);
 
 }

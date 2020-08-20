@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 @RestController
-@ControllerAdvice // 모든 controller를 실행하게 되면 이 @을 가지는 bean이 실행됨
+@ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class )
