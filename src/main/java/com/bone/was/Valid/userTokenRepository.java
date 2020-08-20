@@ -12,6 +12,9 @@ public interface userTokenRepository extends JpaRepository<userToken,Long> {
     @Query("select u from userToken u where u.usertoken = :usertoken")
     Optional<userToken> findByUsertoken(@NotBlank String usertoken);
 
+    @Query("delete from userToken where usertoken = :token")
+    void deleteuserTokenBy(@NotBlank String token);
+
 
 
 }
