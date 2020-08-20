@@ -28,8 +28,8 @@ import java.util.List;
 public class JwtTokenProvider {
     private String secretKey = "webfirewood";
 
-    // 토큰 유효시간 30분
-    private long tokenValidTime = 30 * 60 * 1000L;
+    // 토큰 유효시간 30분 -> 15분
+    private long tokenValidTime = 15 * 60 * 1000L;
 
     private final UserService userDetailsService;
 
@@ -39,7 +39,7 @@ public class JwtTokenProvider {
     @PostConstruct
     protected void init() {
         // spotbugs : 더 어려운 알고리즘 빨리.
-        // 권장 : AES
+        // 권장 : AES...
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 
     }

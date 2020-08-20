@@ -177,8 +177,7 @@ public class LightsController {
 
             }
             // format
-            tmp.put("dst", dstlist);
-            return tmp;
+
         } catch (ParseException e) {
 
         } catch (NullPointerException e1) {
@@ -189,9 +188,8 @@ public class LightsController {
                 urlConnection.disconnect();
 
             // no result
-            JSONObject res = new JSONObject();
-            res.put("dst", new ArrayList<>());
-            return res;
+            tmp.put("dst", dstlist);
+            return tmp;
         }
     }
 

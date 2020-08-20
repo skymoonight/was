@@ -37,10 +37,23 @@ public class UserJpaController {
     // 회원가입 - id 해시처리하여 db 저장
     @PostMapping("/join")
     public Long join(@NotBlank @RequestBody Map<String,String> user) {
-        return userRepository.save(User.builder()
-                .authkey(user.get("authkey"))
-                .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                .build()).getId();
+        // seleuchel
+        System.out.println(" U authkey : " + user.get("authkey"));
+        System.out.println(" U exisst? : " + (userRepository.findByAuthKey(user.get("authkey")).isEmpty()));
+        if (user.get("authkey") != null ){
+            // new user
+            if (userRepository.findByAuthKey(user.get("authkey")).isEmpty()){
+                return userRepository.save(User.builder()
+                        .authkey(user.get("authkey"))
+                        .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
+                        .build()).getId(); //
+            }else{
+                return 200L;
+            }
+        }else{
+            System.out.println("NO");
+            throw new NullPointerException();
+        }
     }
 
     // 로그인
@@ -52,7 +65,7 @@ public class UserJpaController {
         String JWT = jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
         result.put("JWT",JWT);
         saveToken(JWT);
-        System.out.println("JWT:"+JWT);
+        System.out.println("U JWT:"+JWT);
         return result;
     }
 
@@ -63,6 +76,7 @@ public class UserJpaController {
             JSONObject logoutreq = (JSONObject) jsonParser.parse(deleteRequest);
             String authkey = (String) logoutreq.get("authkey2");
             User usered = userRepository.findByAuthKey(authkey).orElseThrow(() -> new IllegalArgumentException("없는 회원"));
+            System.out.println("here" + usered);
             userRepository.delete(usered);
             return "delete success";
         }catch(ParseException e){
@@ -70,7 +84,7 @@ public class UserJpaController {
         }
     }
 
-    public Long saveToken(String jwtToken){
+    public Long saveToken(@NotBlank String jwtToken){
         return userTokenRepository.save(userToken.builder()
                 .usertoken(jwtToken)
                 .build()).getId();
