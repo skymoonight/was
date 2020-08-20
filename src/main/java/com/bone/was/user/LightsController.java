@@ -27,7 +27,6 @@ import java.util.List;
 public class LightsController {
     @Autowired
     private LightsDaoService service;
-    private final JwtTokenProvider jwtTokenProvider;
 
     // 모든 가로등 정보
     @GetMapping("/all")

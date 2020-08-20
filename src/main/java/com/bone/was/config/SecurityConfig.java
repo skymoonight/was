@@ -49,14 +49,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        String encPassword = "$2a$10$3rbfj1WmRaMa92tOoOW2gObALHAi8hwU5XbkNoDBXM9bhIbwJa7b6";
-            auth.inMemoryAuthentication()
-                    .withUser("admin")
-                    .password("{bcrypt}" + encPassword)
-                    .roles("USER");
-
-    }
-
 }

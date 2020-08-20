@@ -27,7 +27,7 @@ public class UserJpaController {
     @Autowired
     private final UserTokenRepository userTokenRepository;
 
-    // 회원가입 - id 해시처리하여 db 저장
+
     @PostMapping("/join")
     public Long join(@NotBlank @RequestBody Map<String, String> user) {
         final String AUTHKEY = "authkey";
