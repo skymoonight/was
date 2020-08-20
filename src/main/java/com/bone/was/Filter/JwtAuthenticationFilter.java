@@ -1,10 +1,9 @@
 package com.bone.was.Filter;
 
-import com.bone.was.Valid.userTokenRepository;
+import com.bone.was.Valid.UserTokenRepository;
 import com.bone.was.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -23,15 +22,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    userTokenRepository userTokenRepository;
+    UserTokenRepository userTokenRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //seleuchel
         // 헤더에서 JWT 를 받아옵니다.
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-//        token= token.replace("\n","");
-//        System.out.println("token : "+ token);
         // 유효한 토큰인지 확인합니다.
         if (token != null){
             if(jwtTokenProvider.validateToken(token)) {

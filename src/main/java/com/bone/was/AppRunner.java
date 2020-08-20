@@ -18,8 +18,8 @@ public class AppRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception{
         Resource resource = resourceLoader.getResource("classpath:/static/.well-known/pki-validation/DFEC40A1632426A425FF7AEE29053E64.txt"); //
-        System.out.println(resource.exists());
-
-        System.out.println(Files.readString(Path.of(resource.getURI())));
+//        System.out.println(resource.exists());
+//
+//        System.out.println(Files.readString(Path.of(resource.getURI())));
     }
 }

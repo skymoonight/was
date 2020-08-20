@@ -1,10 +1,10 @@
 package com.bone.was.location;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Data;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Location {

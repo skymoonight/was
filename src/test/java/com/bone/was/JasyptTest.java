@@ -6,15 +6,15 @@ public class JasyptTest {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         StandardPBEStringEncryptor pbeEnc = new StandardPBEStringEncryptor();
-        pbeEnc.setAlgorithm("PBEWithMD5AndDES");
-        pbeEnc.setPassword("test1234");
+        pbeEnc.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
+        pbeEnc.setPassword("bone1234");
 
-        String url = "jdbc:h2:file:./h2_db";
-        String username = "skymoonight";
-        String password = "test1234";
+//        String url = "jdbc:h2:file:./h2_db";
+//        String username = "skymoonight";
+        String password = "bone1234";
 
-        System.out.println("±âÁ¸ username :: " + username + " | º¯°æ username :: " + pbeEnc.encrypt(username));
-        System.out.println("±âÁ¸ password :: " + password + " | º¯°æ password :: " + pbeEnc.encrypt(password));
+        //System.out.println("ï¿½ï¿½ï¿½ï¿½ username :: " + username + " | ï¿½ï¿½ï¿½ï¿½ username :: " + pbeEnc.encrypt(username));
+        System.out.println("ï¿½ï¿½ï¿½ï¿½ password :: " + password + " | ï¿½ï¿½ï¿½ï¿½ password :: " + pbeEnc.encrypt(password));
     }
 
 }

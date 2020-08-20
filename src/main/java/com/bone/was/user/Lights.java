@@ -1,15 +1,13 @@
 package com.bone.was.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,5 +21,5 @@ public class Lights {
     private Double lat;
     private Double lng;
     private String own;
-    private Date dated;
+    private LocalDate dated;
 }

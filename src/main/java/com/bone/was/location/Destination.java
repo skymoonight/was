@@ -1,9 +1,9 @@
 package com.bone.was.location;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class Destination {
     private String name;

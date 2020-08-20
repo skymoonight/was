@@ -1,39 +1,33 @@
 package com.bone.was.config;
 
-import com.bone.was.Valid.userToken;
-import com.bone.was.Valid.userTokenRepository;
+import com.bone.was.Valid.UserTokenRepository;
 import com.bone.was.user.UserService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.jcajce.provider.symmetric.AES;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
+@PropertySource("classpath:application.yml")
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "webfirewood";
+
+    private String secretKey=System.getenv("JASYPT_PASSWORD");
 
     // 토큰 유효시간 30분 -> 15분 -> 1분
     private long tokenValidTime = 1 * 60 * 1000L;
 
     private final UserService userDetailsService;
 
-    userTokenRepository userTokenRepository;
+    UserTokenRepository userTokenRepository;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -54,7 +48,6 @@ public class JwtTokenProvider {
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
-                // signature 에 들어갈 secret값 세팅
                 .compact();
     }
 
@@ -71,7 +64,6 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
-
         return request.getHeader("X-AUTH-TOKEN");
     }
 

@@ -37,6 +37,7 @@ public class LightsController {
     @PostMapping("/m")
     public JSONObject hashTest(@NotBlank @RequestBody String hash) {
         JSONObject result = new JSONObject();
+        JSONObject err = new JSONObject();
         try {
             JSONParser jsonParser = new JSONParser();
             JSONObject jo = (JSONObject) jsonParser.parse(hash);
@@ -57,22 +58,24 @@ public class LightsController {
             }
         } catch (ParseException e) {
             // 핸들러처리
+            String errM = e.getMessage();
+            err.put("hash_PE",errM);
             // ??? json object 핸들러 처리?
 
         } catch (NullPointerException e1) {
             // 핸들러 처리
+            String errM = e1.getMessage();
+            err.put("hash_NE",errM);
 
         } finally {
-            JSONObject res = new JSONObject();
-            res.put("hash", "no match hash");
-            return res;
+            err.put("hash_fi", "no match hash");
+            return err;
         }
     }
 
     // mode 1. 사용자 위치 주변의 가로등 정보
     @PostMapping("/lights") //jsonArraylist
     public JSONObject myLights(@NotBlank @RequestBody String location1) { //List<Lights>
-
         double tmp_lat = 0.0;
         double tmp_lng = 0.0;
         try {
@@ -84,7 +87,6 @@ public class LightsController {
 
         } catch (ParseException e) {
             // 핸들러 처리 : parseexception
-            //적절한 처리
             tmp_lat = 0.0;
             tmp_lng = 0.0;
         }
@@ -96,10 +98,8 @@ public class LightsController {
 
         // 오차 0.001 약 100m => 50m
         for (Lights lis : lights) {
-            if ((lis.getLat() < tmp_lat + 0.001) && (lis.getLat() >= tmp_lat - 0.001)) {
-                if ((lis.getLng() < tmp_lng + 0.001) && (lis.getLng() >= tmp_lng - 0.001)) {
+            if ((lis.getLat() < tmp_lat + 0.001) && (lis.getLat() >= tmp_lat - 0.001) && (lis.getLng() < tmp_lng + 0.001) && (lis.getLng() >= tmp_lng - 0.001)) {
                     ret.add(lis);
-                }
             }
         }
         // send to json
@@ -109,7 +109,7 @@ public class LightsController {
 
     // mode 1.5 : 상세 목적지 이름, 위도, 경도 받아오기
     @PostMapping("/finddst") //destination == et,   //result is JSONArray
-    public JSONObject searchDst(@NotBlank @RequestBody String destination) { // //@PathVariable String destination){
+    public JSONObject searchDst(@NotBlank @RequestBody String destination) {
         HttpsURLConnection urlConnection = null;
         String dststr = "";
         String url = "";
@@ -133,6 +133,7 @@ public class LightsController {
 
         } catch (ParseException e) {
             // 에러핸들러 처리
+
         } catch (UnsupportedEncodingException e1) {
             // 에러핸들러 처리
         }
@@ -158,7 +159,8 @@ public class LightsController {
             in.close();
             reader.close();
 
-        } catch (MalformedURLException e1) {
+        }
+        catch (MalformedURLException e1) {
             // 에러핸들러 처리
 
         } catch (IOException e2) {
@@ -184,8 +186,8 @@ public class LightsController {
             // failed open urlConnection
             // 에러핸들러 처리
         } finally {
-            if (urlConnection != null)
-                urlConnection.disconnect();
+            if (urlConnection != null){
+                urlConnection.disconnect();}
 
             // no result
             tmp.put("dst", dstlist);
@@ -234,12 +236,10 @@ public class LightsController {
 
         // 범위에 해당하는 가로등 리스트에 저장. (오차 범위 0.001 약 100m)
         // 가로등 5개 반환
-        int cont = 0;
+        int cont = 0; // 이거 안쓰는거면 지워주라
         for (Lights lis : lights) {
-            if ((lis.getLat() < biglat) && (lis.getLat() >= smalllat)) {
-                if ((lis.getLng() < biglng) && (lis.getLng() >= smalllng)) {
+            if ((lis.getLat() < biglat) && (lis.getLat() >= smalllat) && (lis.getLng() < biglng) && (lis.getLng() >= smalllng)) {
                     ret.add(lis);
-                }
             }
         }
 
@@ -247,8 +247,8 @@ public class LightsController {
         // ret -> ret5 : 알고리즘 처리?
         List<Lights> ret5 = new ArrayList<>();
         if (ret.size() >= 5) {
-            for (int i = 0; i < 5; i++)
-                ret5.add(ret.get(i));
+            for (int i = 0; i < 5; i++){
+                ret5.add(ret.get(i));}
         } else {
             ret5 = ret;
         }

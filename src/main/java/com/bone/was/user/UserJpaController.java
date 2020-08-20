@@ -1,25 +1,17 @@
 package com.bone.was.user;
 
-import com.bone.was.Valid.userToken;
-import com.bone.was.Valid.userTokenRepository;
+import com.bone.was.Valid.UserToken;
+import com.bone.was.Valid.UserTokenRepository;
 import com.bone.was.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.*;
 import javax.validation.constraints.NotBlank;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Map;
-
-import static org.apache.commons.codec.digest.DigestUtils.sha256;
-
 
 @RequiredArgsConstructor
 @RestController
@@ -32,26 +24,26 @@ public class UserJpaController {
     UserRepository userRepository;
 
     @Autowired
-    private final userTokenRepository userTokenRepository;
+    private final UserTokenRepository userTokenRepository;
 
     // 회원가입 - id 해시처리하여 db 저장
     @PostMapping("/join")
     public Long join(@NotBlank @RequestBody Map<String,String> user) {
+        final String AUTHKEY = "authkey";
         // seleuchel
-        System.out.println(" U authkey : " + user.get("authkey"));
-        System.out.println(" U exisst? : " + (userRepository.findByAuthKey(user.get("authkey")).isEmpty()));
-        if (user.get("authkey") != null ){
+//        System.out.println(" U authkey : " + user.get("authkey"));
+//        System.out.println(" U exisst? : " + (userRepository.findByAuthKey(user.get("authkey")).isEmpty()));
+        if (user.get(AUTHKEY) != null ){
             // new user
-            if (userRepository.findByAuthKey(user.get("authkey")).isEmpty()){
+            if (userRepository.findByAuthKey(user.get(AUTHKEY)).isEmpty()){
                 return userRepository.save(User.builder()
-                        .authkey(user.get("authkey"))
+                        .authkey(user.get(AUTHKEY))
                         .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                        .build()).getId(); //
+                        .build()).getId();
             }else{
                 return 200L;
             }
         }else{
-            System.out.println("NO");
             throw new NullPointerException();
         }
     }
@@ -65,7 +57,7 @@ public class UserJpaController {
         String JWT = jwtTokenProvider.createToken(member.getAuthkey(), member.getRoles());
         result.put("JWT",JWT);
         saveToken(JWT);
-        System.out.println("U JWT:"+JWT);
+//        System.out.println("U JWT:"+JWT);
         return result;
     }
 
@@ -76,16 +68,16 @@ public class UserJpaController {
             JSONObject logoutreq = (JSONObject) jsonParser.parse(deleteRequest);
             String authkey = (String) logoutreq.get("authkey2");
             User usered = userRepository.findByAuthKey(authkey).orElseThrow(() -> new IllegalArgumentException("없는 회원"));
-            System.out.println("here" + usered);
+//            System.out.println("here" + usered);
             userRepository.delete(usered);
             return "delete success";
         }catch(ParseException e){
-            return "Parse failed";
+            return "ParseException: " + e.getMessage();
         }
     }
 
     public Long saveToken(@NotBlank String jwtToken){
-        return userTokenRepository.save(userToken.builder()
+        return userTokenRepository.save(UserToken.builder()
                 .usertoken(jwtToken)
                 .build()).getId();
     }

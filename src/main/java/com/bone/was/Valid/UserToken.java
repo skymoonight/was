@@ -1,7 +1,7 @@
 package com.bone.was.Valid;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 
 import javax.persistence.Entity;
@@ -9,10 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Data
+@Getter
 @Builder
 @Entity
-public class userToken {
+public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

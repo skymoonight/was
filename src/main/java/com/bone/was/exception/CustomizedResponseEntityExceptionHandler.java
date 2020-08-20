@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.ParseException;
 import java.util.Date;
 
 @RestController
@@ -29,5 +30,21 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 new ExceptionResponse(new Date(),ex.getMessage(),request.getDescription(false));
 
         return new ResponseEntity(exceptionResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ParseException.class)
+    public final ResponseEntity<Object> handleParseException(Exception ex, WebRequest request){
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(new Date(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public final ResponseEntity<Object> handleNullPointerException(Exception ex, WebRequest request){
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(new Date(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

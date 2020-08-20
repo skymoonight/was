@@ -4,12 +4,12 @@ server:
   ssl:
     enabled: true
     key-store: classpath:cert.jks
-    key-password: seleuchel # 비밀번호 암호화 + 솔트 넣기
+    key-password: seleuchel
     key-store-type: JKS
     key-alias: 1
 
     trust-store: classpath:trustcert.jks
-    trust-store-password: seleuchel # 비밀번호 암호화 + 솔트 넣기 + 솔트는 파일 불러오기.
+    trust-store-password: seleuchel
     protocol: TLS
     client-auth: want
 
@@ -25,12 +25,14 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:./h2_db
+  h2:
+    console:
+      path: /safezonebone
+      enabled: true
 
 jasypt:
   encryptor:
-    bean: keyEncryptor
-#    password: test1234
+    bean: jasyptStringEncryptor
     property:
       prefix: ENC(
       suffix: )
-    algorithm: PBEWithMD5AndDES
