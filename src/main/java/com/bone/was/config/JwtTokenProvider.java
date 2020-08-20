@@ -22,7 +22,7 @@ public class JwtTokenProvider {
 
     private String secretKey=System.getenv("JASYPT_PASSWORD");
 
-    private long tokenValidTime = 1 * 60 * 1000L;
+    private long tokenValidTime = 15 * 60 * 1000L;
 
     private final UserService userDetailsService;
 
@@ -40,20 +40,20 @@ public class JwtTokenProvider {
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims) // 정보 저장
+                .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
+                .setExpiration(new Date(now.getTime() + tokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    // JWT 토큰에서 인증 정보 조회
+
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 회원 정보 추출
+
     public String getUserPk(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }

@@ -3,7 +3,6 @@ package com.bone.was.Valid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 

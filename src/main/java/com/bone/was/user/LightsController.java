@@ -1,9 +1,7 @@
 package com.bone.was.user;
 
-import com.bone.was.config.JwtTokenProvider;
 import com.bone.was.location.Destination;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

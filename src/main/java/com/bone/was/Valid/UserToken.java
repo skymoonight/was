@@ -14,7 +14,6 @@ public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String usertoken;
 
 

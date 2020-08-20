@@ -2,7 +2,6 @@ package com.bone.was.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.validation.constraints.NotBlank;
 
 @Service
